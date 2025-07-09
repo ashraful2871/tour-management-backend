@@ -27,7 +27,7 @@ const userSchema = new Schema<IUser>(
     address: { type: String },
     isDeleted: { type: Boolean, default: true },
     isActive: {
-      type: String,
+      type: Boolean,
       enum: Object.values(IsActive),
       default: true,
     },
@@ -39,4 +39,4 @@ const userSchema = new Schema<IUser>(
     versionKey: false,
   }
 );
-export const user = model<IUser>("User", userSchema);
+export const User = model<IUser>("User", userSchema);
