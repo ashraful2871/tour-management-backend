@@ -1,15 +1,25 @@
-/* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextFunction, Request, Response } from "express";
 import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
 import httpStatus from "http-status-codes";
 import { authService } from "./auth.service";
+import AppError from "../../../erroralpers/appError";
 const credentialsLogin = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     // const user = await userServices.createUser(req.body);
+
     const loginInfo = await authService.credentialsLogin(req.body);
-    console.log(loginInfo);
+
+    res.cookie("refresh-token", loginInfo.refreshToken, {
+      httpOnly: true,
+      secure: false,
+    });
+
+    res.cookie("access-token", loginInfo.accessToken, {
+      httpOnly: true,
+      secure: false,
+    });
     sendResponse(res, {
       success: true,
       statusCode: httpStatus.CREATED,
@@ -21,7 +31,13 @@ const credentialsLogin = catchAsync(
 const getNewAccessToken = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     // const user = await userServices.createUser(req.body);
-    const refreshToken = req.headers.authorization;
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken) {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        "no refresh token received from cookies"
+      );
+    }
     const tokenInfo = await authService.getNewAccessToken(
       refreshToken as string
     );
