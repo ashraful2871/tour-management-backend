@@ -1,9 +1,10 @@
 import AppError from "../../../erroralpers/appError";
-import { IAuthProvider, IUser } from "./user.interface";
+import { IAuthProvider, IsActive, IUser, Role } from "./user.interface";
 import { User } from "./user.model";
 import httpStatus from "http-status-codes";
 import bcryptjs from "bcryptjs";
 import { envVars } from "../../config/env";
+import { JwtPayload } from "jsonwebtoken";
 
 const createUser = async (payload: Partial<IUser>) => {
   const { email, password, ...rest } = payload;
@@ -32,6 +33,45 @@ const createUser = async (payload: Partial<IUser>) => {
   return user;
 };
 
+const updateUser = async (
+  userId: string,
+  payload: Partial<IUser>,
+  decodedToken: JwtPayload
+) => {
+  const ifUserExist = await User.findById(userId);
+  if (!ifUserExist) {
+    throw new AppError(httpStatus.NOT_FOUND, "User Not Exist");
+  }
+  if (ifUserExist.isDeleted || ifUserExist.isActive === IsActive.BLOCKED) {
+    throw new AppError(httpStatus.FORBIDDEN, "This USer Can not be updated");
+  }
+  if (payload.role) {
+    if (decodedToken.role === Role.USER || decodedToken.role === Role.GUIDE) {
+      throw new AppError(httpStatus.FORBIDDEN, "you are Not Authorized");
+    }
+    if (payload.role === Role.SUPER_ADMIN && decodedToken.role === Role.ADMIN) {
+      throw new AppError(httpStatus.FORBIDDEN, "you are Not Authorized");
+    }
+    if (payload.isActive || payload.isDeleted || payload.isVerified) {
+      if (decodedToken.role === Role.USER || decodedToken.role === Role.GUIDE) {
+        throw new AppError(httpStatus.FORBIDDEN, "you are Not Authorized");
+      }
+    }
+  }
+  if (payload.password) {
+    payload.password = await bcryptjs.hash(
+      payload.password,
+      envVars.BCRYPT_SALT_ROUND
+    );
+  }
+  const newUpdateUser = await User.findByIdAndUpdate(userId, payload, {
+    new: true,
+    runValidators: true,
+  });
+
+  return newUpdateUser;
+};
+
 const getAllUSers = async () => {
   const users = await User.find({});
   const totalUSers = await User.countDocuments();
@@ -47,4 +87,5 @@ const getAllUSers = async () => {
 export const userServices = {
   createUser,
   getAllUSers,
+  updateUser,
 };
