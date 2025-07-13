@@ -5,21 +5,25 @@ import { sendResponse } from "../../utils/sendResponse";
 import httpStatus from "http-status-codes";
 import { authService } from "./auth.service";
 import AppError from "../../../erroralpers/appError";
+import { setAuthCookie } from "../../utils/setCookie";
 const credentialsLogin = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     // const user = await userServices.createUser(req.body);
 
     const loginInfo = await authService.credentialsLogin(req.body);
 
-    res.cookie("refresh-token", loginInfo.refreshToken, {
-      httpOnly: true,
-      secure: false,
-    });
+    // res.cookie("refresh-token", loginInfo.refreshToken, {
+    //   httpOnly: true,
+    //   secure: false,
+    // });
 
-    res.cookie("access-token", loginInfo.accessToken, {
-      httpOnly: true,
-      secure: false,
-    });
+    // res.cookie("access-token", loginInfo.accessToken, {
+    //   httpOnly: true,
+    //   secure: false,
+    // });
+
+    setAuthCookie(res, loginInfo);
+
     sendResponse(res, {
       success: true,
       statusCode: httpStatus.CREATED,
@@ -28,6 +32,7 @@ const credentialsLogin = catchAsync(
     });
   }
 );
+
 const getNewAccessToken = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     // const user = await userServices.createUser(req.body);
@@ -41,6 +46,12 @@ const getNewAccessToken = catchAsync(
     const tokenInfo = await authService.getNewAccessToken(
       refreshToken as string
     );
+
+    // res.cookie("access-token", tokenInfo.accessToken, {
+    //   httpOnly: true,
+    //   secure: false,
+    // });
+    setAuthCookie(res, tokenInfo.accessToken);
     sendResponse(res, {
       success: true,
       statusCode: httpStatus.CREATED,
