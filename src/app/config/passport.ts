@@ -24,10 +24,15 @@ passport.use(
         if (!isUserExist) {
           return done(null, false, { message: "user dose not exist" });
         }
+
+        // if (!isUserExist) {
+        //   return done("user Dose not Exist");
+        // }
+
         const isGoogleAuthenticated = isUserExist.auths.some(
           (providerObject) => providerObject.provider === "google"
         );
-        if (isGoogleAuthenticated) {
+        if (isGoogleAuthenticated && !isUserExist.password) {
           return done(null, false, {
             message:
               "you have authenticated trough google, if you want to login with credential, then first of login with google and set a password with your gmail then you can login with email and password",
