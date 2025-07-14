@@ -9,7 +9,6 @@ import {
 import { envVars } from "./env";
 import { User } from "../modules/user/user.model";
 import { Role } from "../modules/user/user.interface";
-
 passport.use(
   new GoogleStrategy(
     {
@@ -25,6 +24,7 @@ passport.use(
     ) => {
       try {
         const email = profile.emails?.[0].value;
+        console.log(email);
         if (!email) {
           return done(null, false, { message: "no email found" });
         }
@@ -58,7 +58,7 @@ passport.serializeUser((user: any, done: (err: any, id?: unknown) => void) => {
 });
 passport.deserializeUser(async (id: string, done: any) => {
   try {
-    const user = User.findById(id);
+    const user = await User.findById(id);
     done(null, user);
   } catch (error) {
     done(null, error);

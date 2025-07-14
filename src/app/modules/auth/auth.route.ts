@@ -13,11 +13,6 @@ router.post(
   checkAuth(...Object.values(Role)),
   authController.resetPassword
 );
-router.post(
-  "/reset-password",
-  checkAuth(...Object.values(Role)),
-  authController.resetPassword
-);
 router.get(
   "/google",
   async (req: Request, res: Response, next: NextFunction) => {
@@ -30,7 +25,10 @@ router.get(
 );
 router.get(
   "/google/callback",
-  passport.authenticate("google", { failureRedirect: "/login" }),
+  passport.authenticate("google", {
+    failureRedirect: "/login",
+    // session: false,
+  }),
   authController.googleCallbackController
 );
 export const authRoutes = router;

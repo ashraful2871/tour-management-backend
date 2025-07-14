@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import express, { NextFunction, Request, Response } from "express";
+import express, { Request, Response } from "express";
 import cors from "cors";
 import { router } from "./app/routes";
 import { globalErrorHandler } from "./app/middlewares/globalErrorHandler";
@@ -9,8 +8,8 @@ import passport from "passport";
 import expressSession from "express-session";
 import "./app/config/passport";
 import { envVars } from "./app/config/env";
-const app = express();
 
+const app = express();
 app.use(
   expressSession({
     secret: envVars.EXPRESS_SESSION_SECRET,
