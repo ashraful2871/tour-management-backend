@@ -12,6 +12,7 @@ const router = Router();
 
 router.post(
   "/create",
+  checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
   validatedRequest(createDivisionZodSchema),
   divisionController.createDivision
 );

@@ -6,6 +6,18 @@ import httpStatus from "http-status-codes";
 import { Role } from "../user/user.interface";
 //create division
 const createDivision = async (payload: Partial<IDivision>) => {
+  const isDivisionExist = await Division.findOne({ name: payload.name });
+  if (isDivisionExist) {
+    throw new Error("A division  With this nme already exist");
+  }
+  const baseSlug = payload.name?.toLowerCase().split(" ").join("-");
+  let slug = `${baseSlug}-division`;
+  // console.log(slug);
+  let counter = 0;
+  while (await Division.exists({ slug })) {
+    slug = `${slug}-${counter++}`;
+  }
+  payload.slug = slug;
   const division = await Division.create(payload);
   return division;
 };
