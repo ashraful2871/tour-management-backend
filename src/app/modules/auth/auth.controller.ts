@@ -101,7 +101,7 @@ const logout = catchAsync(
     sendResponse(res, {
       success: true,
       statusCode: httpStatus.CREATED,
-      message: "new access token rived Successfully",
+      message: "Logout Successfully",
       data: null,
     });
   }
