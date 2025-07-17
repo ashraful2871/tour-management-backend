@@ -20,8 +20,8 @@
 
 // # google
 
-// GOOGLE_CLIENT_SECRET=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
-// GOOGLE_CLIENT_ID=798637532562-c3r1l5grvghgevr550rqgkvjcdo1n2at.apps.googleusercontent.com
+// GOOGLE_CLIENT_SECRET=<client_secret>
+// GOOGLE_CLIENT_ID=<client_id>
 // GOOGLE_CALLBACK_URL=/api/v1/auth/google/callback
 
 // #  express session
