@@ -21,7 +21,7 @@
 // # google
 
 // GOOGLE_CLIENT_SECRET=<client_secret>
-// GOOGLE_CLIENT_ID=<client_id>
+// GOOGLE_CLIENT_ID=
 // GOOGLE_CALLBACK_URL=/api/v1/auth/google/callback
 
 // #  express session
