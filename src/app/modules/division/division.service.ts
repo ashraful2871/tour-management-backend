@@ -43,6 +43,7 @@ const deleteDivision = async (divisionId: string, decodedToken: JwtPayload) => {
   }
 
   const result = await Division.findByIdAndDelete(divisionId);
+
   return result;
 };
 
