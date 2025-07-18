@@ -32,6 +32,15 @@ const updateDivision = async (
     throw new AppError(httpStatus.NOT_FOUND, "Division Not Found");
   }
 
+  const duplicateDivision = await Division.findOne({
+    name: payload.name,
+    _id: { $ne: divisionId },
+  });
+
+  if (duplicateDivision) {
+    throw new Error("A division with this name already exists.");
+  }
+
   if (decodedToken.role === Role.USER || decodedToken.role === Role.GUIDE) {
     throw new AppError(httpStatus.FORBIDDEN, "You are not authorized");
   }
@@ -43,6 +52,7 @@ const updateDivision = async (
   );
   return newUpdatedDivision;
 };
+
 //delete division
 const deleteDivision = async (divisionId: string, decodedToken: JwtPayload) => {
   const isDivisionExist = await Division.findById(divisionId);
@@ -71,9 +81,18 @@ const getAllDivision = async () => {
   };
 };
 
+// get single division
+const getSingleDivision = async (slug: string) => {
+  const division = await Division.findOne({ slug });
+  return {
+    data: division,
+  };
+};
+
 export const divisionServices = {
   createDivision,
   getAllDivision,
   updateDivision,
   deleteDivision,
+  getSingleDivision,
 };
