@@ -10,14 +10,14 @@ const createDivision = async (payload: Partial<IDivision>) => {
   if (isDivisionExist) {
     throw new Error("A division  With this nme already exist");
   }
-  const baseSlug = payload.name?.toLowerCase().split(" ").join("-");
-  let slug = `${baseSlug}-division`;
-  // console.log(slug);
-  let counter = 0;
-  while (await Division.exists({ slug })) {
-    slug = `${slug}-${counter++}`;
-  }
-  payload.slug = slug;
+  // const baseSlug = payload.name?.toLowerCase().split(" ").join("-");
+  // let slug = `${baseSlug}-division`;
+  // // console.log(slug);
+  // let counter = 0;
+  // while (await Division.exists({ slug })) {
+  //   slug = `${slug}-${counter++}`;
+  // }
+  // payload.slug = slug;
   const division = await Division.create(payload);
   return division;
 };
@@ -40,6 +40,14 @@ const updateDivision = async (
   if (duplicateDivision) {
     throw new Error("A division with this name already exists.");
   }
+  // const baseSlug = payload.name?.toLowerCase().split(" ").join("-");
+  // let slug = `${baseSlug}-division`;
+  // // console.log(slug);
+  // let counter = 0;
+  // while (await Division.exists({ slug })) {
+  //   slug = `${slug}-${counter++}`;
+  // }
+  // payload.slug = slug;
 
   if (decodedToken.role === Role.USER || decodedToken.role === Role.GUIDE) {
     throw new AppError(httpStatus.FORBIDDEN, "You are not authorized");
