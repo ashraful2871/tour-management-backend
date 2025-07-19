@@ -58,7 +58,10 @@ const deleteDivision = catchAsync(
 // get all  division
 const getAllDivision = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const result = await divisionServices.getAllDivision();
+    const query = req.query;
+    const result = await divisionServices.getAllDivision(
+      query as Record<string, string>
+    );
 
     sendResponse(res, {
       success: true,

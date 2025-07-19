@@ -1,9 +1,6 @@
 import { Router } from "express";
 import { validatedRequest } from "../../middlewares/validateRequest";
-import {
-  createTourTypeZodSchema,
-  updateTourTypeZodSchema,
-} from "./tourType.validation";
+import { createTourTypeZodSchema } from "./tourType.validation";
 import { tourTypeController } from "./tourType.controller";
 import { checkAuth } from "../../middlewares/checkAuth";
 import { Role } from "../user/user.interface";
@@ -23,7 +20,6 @@ router.post(
 router.patch(
   "/tour-type/:id",
   checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
-  validatedRequest(updateTourTypeZodSchema),
   tourTypeController.updateTourType
 );
 //update tour-type

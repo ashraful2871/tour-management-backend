@@ -4,6 +4,8 @@ import { TourType } from "../tour/tour.model";
 import AppError from "../../../erroralpers/appError";
 import httpStatus from "http-status-codes";
 import { Role } from "../user/user.interface";
+import { QueryBuilder } from "../../utils/queryBuilder";
+import { tourTypeSearchableFields } from "./tourType.constant";
 // create tour type
 const createTourType = async (payload: Partial<ITourType>) => {
   const tourType = await TourType.create(payload);
@@ -45,15 +47,23 @@ const deleteTourType = async (tourTypeId: string, decodedToken: JwtPayload) => {
 };
 
 // get tour type
-const getAllTourType = async () => {
-  const tourType = await TourType.find({});
-  const totalTourType = await TourType.countDocuments();
+const getAllTourType = async (query: Record<string, string>) => {
+  const queryBuilder = new QueryBuilder(TourType.find(), query);
+  const tourTypeData = queryBuilder
+    .search(tourTypeSearchableFields)
+    .sort()
+    .filter()
+    .fields()
+    .paginate();
+
+  const [data, meta] = await Promise.all([
+    tourTypeData.build(),
+    queryBuilder.getMeta(),
+  ]);
 
   return {
-    tourType,
-    meta: {
-      totalTourType,
-    },
+    meta,
+    data,
   };
 };
 

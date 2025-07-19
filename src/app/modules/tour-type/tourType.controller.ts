@@ -57,7 +57,10 @@ const deleteTourType = catchAsync(
 // get all tour
 const getAllTourType = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const result = await tourTypeServices.getAllTourType();
+    const query = req.query;
+    const result = await tourTypeServices.getAllTourType(
+      query as Record<string, string>
+    );
     sendResponse(res, {
       success: true,
       statusCode: httpStatus.OK,

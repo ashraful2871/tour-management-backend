@@ -4,6 +4,8 @@ import { Division } from "./division.model";
 import AppError from "../../../erroralpers/appError";
 import httpStatus from "http-status-codes";
 import { Role } from "../user/user.interface";
+import { QueryBuilder } from "../../utils/queryBuilder";
+import { divisionSearchableFields } from "./division.constant";
 //create division
 const createDivision = async (payload: Partial<IDivision>) => {
   const isDivisionExist = await Division.findOne({ name: payload.name });
@@ -78,14 +80,23 @@ const deleteDivision = async (divisionId: string, decodedToken: JwtPayload) => {
 };
 
 //get all division
-const getAllDivision = async () => {
-  const division = await Division.find({});
-  const totalDivision = await Division.countDocuments();
+const getAllDivision = async (query: Record<string, string>) => {
+  const queryBuilder = new QueryBuilder(Division.find(), query);
+
+  const divisionData = queryBuilder
+    .search(divisionSearchableFields)
+    .filter()
+    .sort()
+    .fields()
+    .paginate();
+  const [data, meta] = await Promise.all([
+    divisionData.build(),
+    queryBuilder.getMeta(),
+  ]);
+
   return {
-    division,
-    meta: {
-      total: totalDivision,
-    },
+    data,
+    meta,
   };
 };
 
