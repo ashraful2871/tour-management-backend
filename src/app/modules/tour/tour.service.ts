@@ -2,6 +2,7 @@ import { excludeField } from "../../global.constant";
 import { searchableFields } from "./tour.constant";
 import { ITour } from "./tour.interface";
 import { Tour } from "./tour.model";
+import { QueryBuilder } from "../../utils/queryBuilder";
 
 // crete tour
 const createTour = async (payload: ITour) => {
@@ -26,6 +27,27 @@ const createTour = async (payload: ITour) => {
 
 // get all tour
 const getAllTour = async (query: Record<string, string>) => {
+  const queryBuilder = new QueryBuilder(Tour.find(), query);
+  const tours = queryBuilder
+    .search(searchableFields)
+    .filter()
+    .sort()
+    .fields()
+    .paginate();
+
+  // const meta = await queryBuilder.getMeta();
+  const [data, meta] = await Promise.all([
+    tours.build(),
+    queryBuilder.getMeta(),
+  ]);
+  return {
+    meta,
+    data,
+  };
+};
+// // get all tour old
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const getAllTourOld = async (query: Record<string, string>) => {
   const filter = query;
   const searchTram = query.searchTram || "";
   const sort = query.sort || "-createdAt";
@@ -54,6 +76,7 @@ const getAllTour = async (query: Record<string, string>) => {
   //   .select(fields)
   //   .skip(skip)
   //   .limit(limit);
+
   const filterQuery = Tour.find(filter);
   const tours = filterQuery.find(searchQuery);
   const allTours = await tours
