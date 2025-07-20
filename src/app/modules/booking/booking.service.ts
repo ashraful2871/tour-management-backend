@@ -89,7 +89,7 @@ const createBooking = async (payload: Partial<IBooking>, userId: string) => {
     await session.commitTransaction(); //transaction
     session.endSession();
     return {
-      payment: sslPayment.GatewayPageURL,
+      payment: (sslPayment as { GatewayPageURL: string }).GatewayPageURL,
       booking: updatedBooking,
     };
   } catch (error) {

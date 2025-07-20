@@ -8,7 +8,6 @@ import { envVars } from "../../config/env";
 const initPayment = catchAsync(async (req: Request, res: Response) => {
   const bookingId = req.params.bookingId;
   const result = await PaymentService.initPayment(bookingId);
-  console.log(result);
   sendResponse(res, {
     statusCode: 201,
     success: true,
