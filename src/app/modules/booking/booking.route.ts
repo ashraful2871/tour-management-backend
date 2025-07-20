@@ -2,6 +2,8 @@ import express from "express";
 import { checkAuth } from "../../middlewares/checkAuth";
 import { Role } from "../user/user.interface";
 import { BookingController } from "./booking.controller";
+import { validatedRequest } from "../../middlewares/validateRequest";
+import { createBookingZodSchema } from "./booking.validation";
 
 const router = express.Router();
 
@@ -9,6 +11,7 @@ const router = express.Router();
 router.post(
   "/",
   checkAuth(...Object.values(Role)),
+  validatedRequest(createBookingZodSchema),
   BookingController.createBooking
 );
 

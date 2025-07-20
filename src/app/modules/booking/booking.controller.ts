@@ -8,7 +8,7 @@ const createBooking = catchAsync(async (req: Request, res: Response) => {
   const decodedToken = req.user as JwtPayload;
   const booking = await BookingService.createBooking(
     req.body,
-    decodedToken.userId
+    decodedToken.userID
   );
   sendResponse(res, {
     statusCode: 201,
