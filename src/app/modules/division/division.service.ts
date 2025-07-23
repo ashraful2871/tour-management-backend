@@ -6,6 +6,7 @@ import httpStatus from "http-status-codes";
 import { Role } from "../user/user.interface";
 import { QueryBuilder } from "../../utils/queryBuilder";
 import { divisionSearchableFields } from "./division.constant";
+import { deleteImageFromCloudinary } from "../../config/cloudinary.config";
 //create division
 const createDivision = async (payload: Partial<IDivision>) => {
   const isDivisionExist = await Division.findOne({ name: payload.name });
@@ -23,6 +24,7 @@ const createDivision = async (payload: Partial<IDivision>) => {
   const division = await Division.create(payload);
   return division;
 };
+
 //update division
 const updateDivision = async (
   divisionId: string,
@@ -60,6 +62,10 @@ const updateDivision = async (
     payload,
     { new: true, runValidators: true }
   );
+
+  if (payload.thumbnail && isDivisionExist.thumbnail) {
+    await deleteImageFromCloudinary(isDivisionExist.thumbnail);
+  }
   return newUpdatedDivision;
 };
 

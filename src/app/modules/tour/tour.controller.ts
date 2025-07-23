@@ -5,14 +5,11 @@ import { sendResponse } from "../../utils/sendResponse";
 import { ITour } from "./tour.interface";
 
 const createTour = catchAsync(async (req: Request, res: Response) => {
-  console.log({
-    body: req.body,
-    files: req.files,
-  });
   const payload: ITour = {
     ...req.body,
     images: (req.files as Express.Multer.File[]).map((file) => file.path),
   };
+
   const result = await TourServices.createTour(payload);
   sendResponse(res, {
     statusCode: 201,
@@ -34,7 +31,10 @@ const getAllTour = catchAsync(async (req: Request, res: Response) => {
 });
 const updateTour = catchAsync(async (req: Request, res: Response) => {
   const id = req.params.id;
-  const payload = req.body;
+  const payload: ITour = {
+    ...req.body,
+    images: (req.files as Express.Multer.File[]).map((file) => file.path),
+  };
   const result = await TourServices.updateTour(id, payload);
   sendResponse(res, {
     statusCode: 201,

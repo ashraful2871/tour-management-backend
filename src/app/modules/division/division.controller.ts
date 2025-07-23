@@ -28,8 +28,11 @@ const createDivision = catchAsync(
 const updateDivision = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const divisionId = req.params.id;
+    const payload: IDivision = {
+      ...req.body,
+      thumbnail: req.file?.path,
+    };
     const verifiedToken = req.user;
-    const payload = req.body;
     const division = await divisionServices.updateDivision(
       divisionId,
       payload,
