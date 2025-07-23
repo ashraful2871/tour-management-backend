@@ -5,16 +5,22 @@ import { divisionServices } from "./division.service";
 import { sendResponse } from "../../utils/sendResponse";
 import httpStatus from "http-status-codes";
 import { JwtPayload } from "jsonwebtoken";
+import { IDivision } from "./division.interface";
 
 // create division
 const createDivision = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const division = await divisionServices.createDivision(req.body);
+    const payload: IDivision = {
+      ...req.body,
+      thumbnail: req.file?.path,
+    };
+    const division = await divisionServices.createDivision(payload);
     sendResponse(res, {
       success: true,
       statusCode: httpStatus.CREATED,
       message: "division created successfully",
       data: division,
+      // data: {},
     });
   }
 );
