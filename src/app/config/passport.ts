@@ -8,9 +8,12 @@ import {
 } from "passport-google-oauth20";
 import { envVars } from "./env";
 import { User } from "../modules/user/user.model";
-import { Role } from "../modules/user/user.interface";
+import { IsActive, Role } from "../modules/user/user.interface";
 import { Strategy as localStrategy } from "passport-local";
 import bcryptjs from "bcryptjs";
+// import httpStatus from "http-status-codes";
+// import AppError from "../../erroralpers/appError";
+
 passport.use(
   new localStrategy(
     {
@@ -23,6 +26,27 @@ passport.use(
 
         if (!isUserExist) {
           return done(null, false, { message: "user dose not exist" });
+        }
+        if (!isUserExist.isVerified) {
+          // throw new AppError(httpStatus.BAD_REQUEST, "user is not verified");
+          return done(null, false, { message: "user is not verified" });
+        }
+
+        if (
+          isUserExist.isActive === IsActive.BLOCKED ||
+          isUserExist.isActive === IsActive.InActive
+        ) {
+          // throw new AppError(
+          //   httpStatus.BAD_REQUEST,
+          //   `user is ${isUserExist.isActive}`
+          // );
+          return done(null, false, {
+            message: `user is ${isUserExist.isActive}`,
+          });
+        }
+        if (isUserExist.isDeleted) {
+          // throw new AppError(httpStatus.BAD_REQUEST, "user is deleted");
+          return done(null, false, { message: "user is deleted" });
         }
 
         // if (!isUserExist) {
@@ -74,9 +98,31 @@ passport.use(
         if (!email) {
           return done(null, false, { message: "no email found" });
         }
-        let user = await User.findOne({ email });
-        if (!user) {
-          user = await User.create({
+        let isUserExist = await User.findOne({ email });
+        if (isUserExist && !isUserExist.isVerified) {
+          // throw new AppError(httpStatus.BAD_REQUEST, "user is not verified");
+          return done(null, false, { message: "user is not verified" });
+        }
+
+        if (
+          isUserExist &&
+          (isUserExist.isActive === IsActive.BLOCKED ||
+            isUserExist.isActive === IsActive.InActive)
+        ) {
+          // throw new AppError(
+          //   httpStatus.BAD_REQUEST,
+          //   `user is ${isUserExist.isActive}`
+          // );
+          return done(null, false, {
+            message: `user is ${isUserExist.isActive}`,
+          });
+        }
+        if (isUserExist && isUserExist.isDeleted) {
+          // throw new AppError(httpStatus.BAD_REQUEST, "user is deleted");
+          return done(null, false, { message: "user is deleted" });
+        }
+        if (!isUserExist) {
+          isUserExist = await User.create({
             email,
             name: profile.displayName,
             picture: profile.photos?.[0].value,
@@ -90,7 +136,8 @@ passport.use(
             ],
           });
         }
-        return done(null, user);
+
+        return done(null, isUserExist);
       } catch (error) {
         console.log("Google Strategy error", error);
         return done(error);
