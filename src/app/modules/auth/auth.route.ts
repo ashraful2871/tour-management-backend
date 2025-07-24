@@ -8,11 +8,25 @@ const router = Router();
 router.post("/login", authController.credentialsLogin);
 router.post("/refresh-token", authController.getNewAccessToken);
 router.post("/logout", authController.logout);
+
+router.post(
+  "/change-password",
+  checkAuth(...Object.values(Role)),
+  authController.changePassword
+);
+
 router.post(
   "/reset-password",
   checkAuth(...Object.values(Role)),
   authController.resetPassword
 );
+
+router.post(
+  "/set-password",
+  checkAuth(...Object.values(Role)),
+  authController.setPassword
+);
+
 router.get(
   "/google",
   async (req: Request, res: Response, next: NextFunction) => {

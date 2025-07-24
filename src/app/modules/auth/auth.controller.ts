@@ -11,6 +11,7 @@ import { JwtPayload } from "jsonwebtoken";
 import { createUserTokens } from "../../utils/userTokens";
 import { envVars } from "../../config/env";
 import passport from "passport";
+
 const credentialsLogin = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     // const user = await userServices.createUser(req.body);
@@ -124,6 +125,37 @@ const resetPassword = catchAsync(
     });
   }
 );
+const setPassword = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const decodedToken = req.user as JwtPayload;
+    const { password } = req.body;
+    await authService.setPassword(decodedToken.userID, password);
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.CREATED,
+      message: "password Changed Successfully",
+      data: null,
+    });
+  }
+);
+const changePassword = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const decodedToken = req.user;
+    const oldPassword = req.body.oldPassword;
+    const newPassword = req.body.newPassword;
+    await authService.resetPassword(
+      oldPassword,
+      newPassword,
+      decodedToken as JwtPayload
+    );
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.CREATED,
+      message: "password Changed Successfully",
+      data: null,
+    });
+  }
+);
 const googleCallbackController = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     let redirectTo = req.query.state ? (req.query.state as string) : "";
@@ -152,5 +184,7 @@ export const authController = {
   getNewAccessToken,
   logout,
   resetPassword,
+  changePassword,
+  setPassword,
   googleCallbackController,
 };
