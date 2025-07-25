@@ -107,16 +107,23 @@ const logout = catchAsync(
     });
   }
 );
+const forgotPassword = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { email } = req.body;
+
+    await authService.forgotPassword(email);
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.CREATED,
+      message: "email send Successfully",
+      data: null,
+    });
+  }
+);
 const resetPassword = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const decodedToken = req.user;
-    const oldPassword = req.body.oldPassword;
-    const newPassword = req.body.newPassword;
-    await authService.resetPassword(
-      oldPassword,
-      newPassword,
-      decodedToken as JwtPayload
-    );
+    await authService.resetPassword(req.body, decodedToken as JwtPayload);
     sendResponse(res, {
       success: true,
       statusCode: httpStatus.CREATED,
@@ -143,7 +150,7 @@ const changePassword = catchAsync(
     const decodedToken = req.user;
     const oldPassword = req.body.oldPassword;
     const newPassword = req.body.newPassword;
-    await authService.resetPassword(
+    await authService.changePassword(
       oldPassword,
       newPassword,
       decodedToken as JwtPayload
@@ -184,6 +191,7 @@ export const authController = {
   getNewAccessToken,
   logout,
   resetPassword,
+  forgotPassword,
   changePassword,
   setPassword,
   googleCallbackController,

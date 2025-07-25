@@ -17,15 +17,16 @@ router.post(
 );
 
 router.post(
-  "/reset-password",
-  checkAuth(...Object.values(Role)),
-  authController.resetPassword
-);
-
-router.post(
   "/set-password",
   checkAuth(...Object.values(Role)),
   authController.setPassword
+);
+router.post("/forgot-password", authController.forgotPassword);
+
+router.post(
+  "/reset-password",
+  checkAuth(...Object.values(Role)),
+  authController.resetPassword
 );
 
 router.get(
