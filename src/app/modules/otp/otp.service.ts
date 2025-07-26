@@ -18,7 +18,6 @@ const sendOTP = async (email: string, name: string) => {
   if (user.isVerified) {
     throw new AppError(401, "You are already verified");
   }
-
   const otp = generaOTP();
 
   const redisKey = `otp:${email}`;
