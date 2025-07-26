@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import crypto from "crypto";
 import { User } from "../user/user.model";
 import AppError from "../../../erroralpers/appError";
@@ -45,7 +44,32 @@ const sendOTP = async (email: string, name: string) => {
 };
 
 const verifyOTP = async (email: string, otp: string) => {
-  return {};
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    throw new AppError(404, "User not found");
+  }
+
+  if (user.isVerified) {
+    throw new AppError(401, "You are already verified");
+  }
+
+  const redisKey = `otp:${email}`;
+
+  const saveOtp = await redisClient.get(redisKey);
+
+  if (!saveOtp) {
+    throw new AppError(401, "Invalid OTP");
+  }
+
+  if (saveOtp !== otp) {
+    throw new AppError(401, "Invalid OTP");
+  }
+
+  await Promise.all([
+    User.updateOne({ email }, { isVerified: true }, { runValidators: true }),
+    redisClient.del([redisKey]),
+  ]);
 };
 
 export const OTPService = {
