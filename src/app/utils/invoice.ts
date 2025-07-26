@@ -3,8 +3,8 @@ import PDFDocument from "pdfkit";
 import AppError from "../../erroralpers/appError";
 
 export interface IInvoiceData {
-  transactionId: string;
   bookingDate: Date;
+  transactionId: string;
   userName: string;
   tourTitle: string;
   guestCount: number;
@@ -96,6 +96,7 @@ export const generaPDF = async (
         .text("For any queries, contact support@example.com", {
           align: "center",
         });
+      doc.end();
     });
   } catch (error: any) {
     console.log(error);

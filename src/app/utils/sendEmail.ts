@@ -19,7 +19,7 @@ interface SendEmailOptions {
   subject: string;
   templateName: string;
   templateData?: Record<string, any>;
-  attachment?: {
+  attachments?: {
     filename: string;
     content: Buffer | string;
     contentType: string;
@@ -31,7 +31,7 @@ export const sendEmail = async ({
   subject,
   templateName,
   templateData,
-  attachment,
+  attachments,
 }: SendEmailOptions) => {
   try {
     const templatePath = path.join(__dirname, `templates/${templateName}.ejs`);
@@ -41,7 +41,7 @@ export const sendEmail = async ({
       to: to,
       subject: subject,
       html: html,
-      attachments: attachment?.map((attachment) => ({
+      attachments: attachments?.map((attachment) => ({
         filename: attachment.filename,
         content: attachment.content,
         contentType: attachment.contentType,

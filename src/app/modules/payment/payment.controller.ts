@@ -21,7 +21,9 @@ const successPayment = catchAsync(async (req: Request, res: Response) => {
   const result = await PaymentService.successPayment(
     query as Record<string, string>
   );
+  console.log(result, "result.............");
   if (result.success) {
+    console.log("redirect...............................");
     res.redirect(
       `${envVars.SSL.SSL_SUCCESS_FRONTEND_URL}?transactionId=${query.transactionId}&message=${result.message}&amount=${query.amount}&status=${query.status}`
     );

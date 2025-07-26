@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Booking Invoice</title>
+  </head>
+  <body
+    style="
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f5f7fa;
+      color: #333;
+    "
+  >
+    <div
+      style="
+        max-width: 600px;
+        margin: auto;
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      "
+    >
+      <h1 style="text-align: center; color: #2c3e50">Invoice for Booking</h1>
+      <hr
+        style="
+          border: none;
+          height: 1px;
+          background-color: #eee;
+          margin: 20px 0;
+        "
+      />
+
+      <p style="font-size: 16px">
+        <strong>Customer Name:</strong> <%= userName %>
+      </p>
+      <p style="font-size: 16px">
+        <strong>Tour Title:</strong> <%= tourTitle %>
+      </p>
+      <p style="font-size: 16px">
+        <strong>Booking Date:</strong> <%= new
+        Date(bookingDate).toLocaleDateString() %>
+      </p>
+      <p style="font-size: 16px">
+        <strong>Guest Count:</strong> <%= guestCount %>
+      </p>
+
+      <div
+        style="
+          margin: 30px 0;
+          padding: 15px;
+          background-color: #f0f8ff;
+          border-left: 5px solid #3498db;
+          border-radius: 4px;
+        "
+      >
+        <p style="font-size: 18px">
+          <strong>Payment ID:</strong> <%= transactionId %>
+        </p>
+        <p style="font-size: 18px">
+          <strong>Amount Paid:</strong> $<%= totalAmount.toFixed(2) %>
+        </p>
+      </div>
+
+      <p style="font-size: 15px; color: #555">
+        Thank you for your booking! We look forward to serving you.
+      </p>
+
+      <p style="text-align: center; margin-top: 40px">
+        <a
+          href="#"
+          style="
+            background-color: #3498db;
+            color: #ffffff;
+            padding: 12px 20px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: bold;
+          "
+        >
+          Download Invoice PDF
+        </a>
+      </p>
+    </div>
+  </body>
+</html>
