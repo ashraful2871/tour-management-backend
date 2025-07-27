@@ -11,7 +11,6 @@ import { envVars } from "../../config/env";
 import { IAuthProvider, IsActive } from "../user/user.interface";
 import jwt from "jsonwebtoken";
 import { sendEmail } from "../../utils/sendEmail";
-import { name } from "ejs";
 
 // const credentialsLogin = async (payload: Partial<IUser>) => {
 //   const { email, password } = payload;
