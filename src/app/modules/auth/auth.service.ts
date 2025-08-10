@@ -70,6 +70,7 @@ const resetPassword = async (
   payload: Record<string, any>,
   decodedToken: JwtPayload
 ) => {
+  // eslint-disable-next-line no-console
   console.log(decodedToken);
   if (payload.id != decodedToken.userId) {
     throw new AppError(401, "you can not reset your password");
